@@ -22,9 +22,9 @@ def search_amazon_data(scannable_id, local_date, route_number):
     'cwr_s': 'eyJzZXNzaW9uSWQiOiJlN2Y3MGYwNS0zZjAxLTQ0M2UtYmNjYS0wOWZiZjhhZGY0YzEiLCJyZWNvcmQiOnRydWUsImV2ZW50Q291bnQiOjcwLCJwYWdlIjp7InBhZ2VJZCI6Ii9vcGVyYXRpb25zL2V4ZWN1dGlvbi9kdi9yb3V0ZXMiLCJwYXJlbnRQYWdlSWQiOiIvb3BlcmF0aW9ucy9leGVjdXRpb24vZHYvcm91dGVzLzcxNTM2NTEtMjU3IiwiaW50ZXJhY3Rpb24iOjE4MiwicmVmZXJyZXIiOiJodHRwczovL2xvZ2lzdGljcy5hbWF6b24uZnIvb3BlcmF0aW9ucy9leGVjdXRpb24vZHYvcm91dGVzLzcxNTM2NTEtMjU3P25hdk1lbnVWYXJpYW50PWV4dGVybmFsJnByb3ZpZGVyPUFMTF9EUklWRVJTJnNlbGVjdGVkRGF5PTIwMjUtMTEtMDMmc2VydmljZUFyZWFJZD1kNDU5Nzg4Yi02YTczLTQ4ZjktYTcxMy04MWFmYTBjNTliNjYmdHJhbnNwb3J0ZXI9QUxMX0RSSVZFUlMiLCJyZWZlcnJlckRvbWFpbiI6ImxvZ2lzdGljcy5hbWF6b24uZnIiLCJzdGFydCI6MTc2MjE4NjM5MDk4MX19',
     'x-acbfr': 'S6nVDF7DBQis7psHiQBPgmunzuEqBFBW8@wFhyUTnVbf5cMryEWf87QwajPPGFZC',
     'session-token': 'JnMCUjDnJVFwqeoHOtID5/Fa0ri1WAZcBIi5LjOenMmvPQOGWuaoDaeF/jpuYFVA2MYEBdY+jdwRSGT9+H4cszhjIrPISZ1PaKxHcgBTw0DuK/yYaf50cEjEKMJsd9XNiTwnb0C7wbL6frknvZRJsuo+O+UYrHWpd7AKkd8SyWdWya9AzLdXOgfumuGaLCTcP/mqNlSUuD+DnrpZkI++ZwRyUhLPPaxeO/TOodQBopEKjrQEKnn3DaTHN5aAVkbH1w1Jvo+o0FGtgAwThG4695QiWA1ItDeyKu/iJH0bJWbhKSf3Ela76RPwBfjp0I7I9mBkGgbrp9bi4CdYYz3iNfHzKlNQBqUssTKUkoOeZrx53Dqct3oZ4+xYRSUhoR4b',
-}
+    }
 
-headers = {
+    headers = {
     'accept': 'application/json, text/plain, */*',
     'accept-language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
     'priority': 'u=1, i',
@@ -41,7 +41,7 @@ headers = {
     'x-cortex-session': '2230bdad96754e0a',
     'x-cortex-timestamp': '1762186565986',
     # 'cookie': 'ubid-acbfr=260-2943062-6095419; x-amz-log-portal-locale=fr-FR; cwr_u=79b61410-1164-4dcd-8580-d6e68bf2599f; i18n-prefs=EUR; lc-acbfr=fr_FR; sst-acbfr=Sst1|PQF1VaWX0byHK9S87JS5GeQyCa2bhRZJYQ5_vtZOyCFiyDvDissy3urTxw-h71RGk-CLj4Lj13gAZ9LsO_0AEI38Cvnt_sKzw6kXCg7kOwOm007iDQ7dwA0fVrT6k0joN8zQXjR-aZQ5UssZw_6TX4GfYGm7Jq-k3tPF1e_cTeWPud-UFhoAUvA-Baj_SbF5qmutlA-owoOQdujV3qr5qDQy2j6pa-T2pUVZeuV9QnifuXbolstuurfauHylo8FkAoMfZAs2Y9G_ACu9gfnZah6CVjT2AWZvpwhmu9iUBPVtPRM; session-id=262-3184298-6525947; at-acbfr=Atza|gQBWgDB1AwEBAqg_27yBUxAz5qtNviHj1AKDnnyTVVwhYR654uJSvTFRceOZi-zGxAgvc48AkRWBBzvl-OW2XQVpU6wMJ-36voKGJrFdUrLhweDdMOv_mOS42YlKBwPqiIBDHLDwntmsQnyBCo4o54WHhKTQat6I56dHtuf7PX2Y1YKT7uigNYTuFweMAb2kFph9Anvmyj-IPbO6r2MjfOZ_r9R124lspOXxkbDpMP9ZOzcPrBZfkUc3QZqUagurTECA_RyaB-tNNXk0QjcY5TcVSkaMGeyGfeuBtlLhx-s0cjH_ikCJ7mEudcqMlKCG9b_H27n-Ed32PjI-dyzLw-Hr; sess-at-acbfr="3TI7ZybCSHIeW2k8h5MG9WBcAqXeb7otlXqyAUYTCBo="; session-id-time=2082787201l; cwr_s=eyJzZXNzaW9uSWQiOiJlN2Y3MGYwNS0zZjAxLTQ0M2UtYmNjYS0wOWZiZjhhZGY0YzEiLCJyZWNvcmQiOnRydWUsImV2ZW50Q291bnQiOjcwLCJwYWdlIjp7InBhZ2VJZCI6Ii9vcGVyYXRpb25zL2V4ZWN1dGlvbi9kdi9yb3V0ZXMiLCJwYXJlbnRQYWdlSWQiOiIvb3BlcmF0aW9ucy9leGVjdXRpb24vZHYvcm91dGVzLzcxNTM2NTEtMjU3IiwiaW50ZXJhY3Rpb24iOjE4MiwicmVmZXJyZXIiOiJodHRwczovL2xvZ2lzdGljcy5hbWF6b24uZnIvb3BlcmF0aW9ucy9leGVjdXRpb24vZHYvcm91dGVzLzcxNTM2NTEtMjU3P25hdk1lbnVWYXJpYW50PWV4dGVybmFsJnByb3ZpZGVyPUFMTF9EUklWRVJTJnNlbGVjdGVkRGF5PTIwMjUtMTEtMDMmc2VydmljZUFyZWFJZD1kNDU5Nzg4Yi02YTczLTQ4ZjktYTcxMy04MWFmYTBjNTliNjYmdHJhbnNwb3J0ZXI9QUxMX0RSSVZFUlMiLCJyZWZlcnJlckRvbWFpbiI6ImxvZ2lzdGljcy5hbWF6b24uZnIiLCJzdGFydCI6MTc2MjE4NjM5MDk4MX19; x-acbfr=S6nVDF7DBQis7psHiQBPgmunzuEqBFBW8@wFhyUTnVbf5cMryEWf87QwajPPGFZC; session-token=JnMCUjDnJVFwqeoHOtID5/Fa0ri1WAZcBIi5LjOenMmvPQOGWuaoDaeF/jpuYFVA2MYEBdY+jdwRSGT9+H4cszhjIrPISZ1PaKxHcgBTw0DuK/yYaf50cEjEKMJsd9XNiTwnb0C7wbL6frknvZRJsuo+O+UYrHWpd7AKkd8SyWdWya9AzLdXOgfumuGaLCTcP/mqNlSUuD+DnrpZkI++ZwRyUhLPPaxeO/TOodQBopEKjrQEKnn3DaTHN5aAVkbH1w1Jvo+o0FGtgAwThG4695QiWA1ItDeyKu/iJH0bJWbhKSf3Ela76RPwBfjp0I7I9mBkGgbrp9bi4CdYYz3iNfHzKlNQBqUssTKUkoOeZrx53Dqct3oZ4+xYRSUhoR4b',
-}
+    }
     params = {
         'historicalDay': 'false',
         'localDate': local_date,
