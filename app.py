@@ -38,7 +38,7 @@ def search_amazon_data(scannable_id, local_date, route_number):
         data = json.loads(response.text)
         all_route_ids = []
 
-        for itinerary in data['itinerarySummaries']:
+        for itinerary in data['rmsRouteSummaries']:
             route_ids = [route['routeId'] for route in itinerary['routes']]
             all_route_ids.extend(route_ids)
 
