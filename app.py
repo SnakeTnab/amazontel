@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 import urllib.parse
 
+# -------------------- Fonctions --------------------
 
 @st.cache_data
 def search_amazon_data(scannable_id, local_date, route_number):
@@ -51,94 +52,89 @@ headers = {
         'statsFromSummaries': 'true',
     }
 
-    response = requests.get('https://logistics.amazon.fr/operations/execution/api/route-summaries', params=params, cookies=cookies, headers=headers)
+    try:
+        response = requests.get(
+            'https://logistics.amazon.fr/operations/execution/api/route-summaries',
+            params=params, cookies=cookies, headers=headers
+        )
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        st.error(f"Erreur lors de la récupération des routes : {e}")
+        return []
 
-    if response.status_code == 200:
-        data = json.loads(response.text)
-        all_route_ids = []
+    data = response.json()
+    all_route_ids = [route['routeId'] for itinerary in data['rmsRouteSummaries'] for route in itinerary['routes']]
+    prefixed_route_links = [f"https://logistics.amazon.fr/operations/execution/api/routes/{route_id}" for route_id in all_route_ids]
 
-        for itinerary in data['rmsRouteSummaries']:
-            route_ids = [route['routeId'] for route in itinerary['routes']]
-            all_route_ids.extend(route_ids)
-
-        prefixed_route_ids = [f"https://logistics.amazon.fr/operations/execution/api/routes/{route_id}" for route_id in all_route_ids]
-
-        if route_number.isdigit():
-            route_number = int(route_number)
-            matching_route_links = []
-
-            for route_link in prefixed_route_ids:
-                parts = route_link.split('/')
-                last_part = parts[-1]
-                route_id = last_part.split('-')[-1]
-
-                if route_id.isdigit() and int(route_id) == route_number:
-                    matching_route_links.append(route_link)
-
-            if matching_route_links:
-                for route_link in matching_route_links:
-                    route_response = requests.get(route_link, cookies=cookies)
-
-                    if route_response.status_code == 200:
-                        route_data = json.loads(route_response.text)
-                    else:
-                        st.error(f"Échec de la récupération des données pour l'URL {route_link} avec le code d'état : {route_response.status_code}")
-            else:
-                st.warning(f"Aucune URL correspondante trouvée pour le numéro de route {route_number}.")
-        else:
-            st.warning("Le numéro de route doit être un entier.")
+    route_data = None
+    if route_number.isdigit():
+        route_number = int(route_number)
+        for route_link in prefixed_route_links:
+            last_part = route_link.split('/')[-1]
+            route_id = last_part.split('-')[-1]
+            if route_id.isdigit() and int(route_id) == route_number:
+                try:
+                    route_response = requests.get(route_link, cookies=cookies, headers=headers)
+                    route_response.raise_for_status()
+                    route_data = route_response.json()
+                    break
+                except requests.exceptions.RequestException as e:
+                    st.error(f"Erreur lors de la récupération de la route {route_number} : {e}")
     else:
-        st.error("Échec de la récupération des données logistiques Amazon.")
+        st.warning("Le numéro de route doit être un entier.")
+        return []
 
-    infos = get_info_by_scannable_id(route_data, scannable_id)
-    return infos
+    if not route_data:
+        st.warning(f"Aucune donnée trouvée pour le numéro de route {route_number}.")
+        return []
+
+    return get_info_by_scannable_id(route_data, scannable_id)
 
 def get_info_by_scannable_id(route_data, scannable_id):
     matching_infos = []
 
-    for stop in route_data['routePlan']['stopList']:
-        for package in stop['stopDetails']['packageList']:
-            if package['scannableId'] == scannable_id:
-                address_info = stop['stopDetails']['address']
+    for stop in route_data.get('routePlan', {}).get('stopList', []):
+        for package in stop.get('stopDetails', {}).get('packageList', []):
+            if package.get('scannableId') == scannable_id:
+                address_info = stop['stopDetails'].get('address', {})
                 matching_infos.append({
-                    'name': address_info['name'],
-                    'address1': address_info['address1'],
+                    'name': address_info.get('name', ''),
+                    'address1': address_info.get('address1', ''),
                     'address2': address_info.get('address2', ''),
-                    'postalCode': address_info['postalCode'],
-                    'city': address_info['city'],
+                    'postalCode': address_info.get('postalCode', ''),
+                    'city': address_info.get('city', ''),
                     'phone': address_info.get('phone', '')
                 })
-
-    matching_infos = matching_infos[1:]
     return matching_infos
-    
-def share_on_whatsapp(result):
-    message = f"Nom: {result['name']}\nAdresse 1: {result['address1']}\nAdresse 2: {result['address2']}\nCode postal: {result['postalCode']}\nVille: {result['city']}\nTéléphone: {result['phone']}"
-    
-    # Créez un lien WhatsApp avec le message pré-rempli
-    whatsapp_link = f"https://wa.me/?text={urllib.parse.quote_plus(message)}"
-    print("WhatsApp Link:", whatsapp_link)  # Ajoutez cette ligne
-    
-    # Affichez le lien généré
-    st.success("Lien WhatsApp généré:")
-    st.markdown(f"[Partager sur WhatsApp]({whatsapp_link})", unsafe_allow_html=True)
-    
-def main():
-    # Définir l'icône de la page avec un emoji téléphone
-    st.set_page_config(page_icon="📞", page_title="Amazon Client")
 
+def generate_whatsapp_link(result):
+    message = (
+        f"Nom: {result['name']}\n"
+        f"Adresse 1: {result['address1']}\n"
+        f"Adresse 2: {result['address2']}\n"
+        f"Code postal: {result['postalCode']}\n"
+        f"Ville: {result['city']}\n"
+        f"Téléphone: {result['phone']}"
+    )
+    return f"https://wa.me/?text={urllib.parse.quote_plus(message)}"
+
+# -------------------- Interface Streamlit --------------------
+
+def main():
+    st.set_page_config(page_icon="📞", page_title="Amazon Client")
     st.title("Amazon Client")
 
-    local_date = st.date_input("Date :", min_value=datetime(2022, 1, 1), max_value=datetime(2200, 1, 1))
+    local_date = st.date_input(
+        "Date :", min_value=datetime(2022, 1, 1), max_value=datetime(2200, 1, 1)
+    )
     route_number = st.text_input("Numéro de route :")
     scannable_id = st.text_input("Numéro de colis :")
 
     if st.button("Rechercher"):
-        # Convertir scannable_id en majuscules
         scannable_id = scannable_id.upper()
         formatted_date = local_date.strftime("%Y-%m-%d")
         results = search_amazon_data(scannable_id, formatted_date, route_number)
-        
+
         if not results:
             st.warning("Aucun résultat trouvé.")
         else:
@@ -149,13 +145,12 @@ def main():
                 st.write("Code postal :", result['postalCode'])
                 st.write("Ville :", result['city'])
                 st.write("Téléphone :", result['phone'])
-                st.write("-" * 30)
                 
-             # Ajoutez un bouton pour partager sur WhatsApp
-            if st.button("Partager sur WhatsApp"):
-                    share_on_whatsapp(result)
+                whatsapp_link = generate_whatsapp_link(result)
+                st.markdown(f"[Partager sur WhatsApp]({whatsapp_link})", unsafe_allow_html=True)
+                st.write("---")
 
-# Ajout du pied de page
+    # Pied de page
     st.markdown(
         """
         <div style="text-align:center; margin-top: 30px; color: #888;">
@@ -165,6 +160,6 @@ def main():
         """,
         unsafe_allow_html=True
     )
-    
+
 if __name__ == "__main__":
     main()
