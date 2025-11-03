@@ -27,11 +27,13 @@ def search_amazon_data(scannable_id, local_date, route_number):
     }
 
     params = {
+        'historicalDay': 'false',
         'localDate': local_date,
         'serviceAreaId': 'd459788b-6a73-48f9-a713-81afa0c59b66',
+        'statsFromSummaries': 'true',
     }
 
-    response = requests.get('https://logistics.amazon.fr/operations/execution/api/summaries', params=params, cookies=cookies)
+    response = requests.get('https://logistics.amazon.fr/operations/execution/api/route-summaries', params=params, cookies=cookies)
 
     if response.status_code == 200:
         data = json.loads(response.text)
