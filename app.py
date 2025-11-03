@@ -64,8 +64,8 @@ def search_amazon_data(scannable_id, local_date, route_number):
 
     for itinerary in data.get('rmsRouteSummaries', []):
         route_id = itinerary.get('routeId')  # directement ici
-            if route_id:
-                all_route_ids.append(route_id)
+        if route_id:
+            all_route_ids.append(route_id)
 
     prefixed_route_links = [
         f"https://logistics.amazon.fr/operations/execution/api/routes/{route_id}" 
